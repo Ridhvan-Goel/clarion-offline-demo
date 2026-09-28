@@ -1,0 +1,9 @@
+# Minimal offline-demo dependencies -- no torch, no training stack.
+fastapi
+uvicorn[standard]
+python-multipart
+matplotlib
+numpy
+onnxruntime
+soundfile
+pywebview

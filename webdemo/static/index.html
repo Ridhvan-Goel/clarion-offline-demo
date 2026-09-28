@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Adaptive Noise Cancellation &mdash; live on Kria KV260</title>
+<link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brandRow">
+      <div class="brand"><span class="brandIco"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2.5l2-6 3 15 2.5-11 1.5 6 2-4H22"/></svg></span>ANC
+        <span class="tagline">Cleaner audio. Clearer conversations.</span></div>
+      <button id="demoModeBtn" class="linkBtn"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V19a2 2 0 0 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H4a2 2 0 0 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.55V4a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.55 1H20a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg> Demo mode</button>
+    </div>
+    <span class="eyebrow">AI Powered</span>
+    <h1>AI Adaptive <span class="accentText">Noise Cancellation</span></h1>
+    <p class="sub">Real-time speech enhancement for noisy environments.</p>
+    <div class="statusRow">
+      <div id="status" class="pill pill-wait">checking&hellip;</div>
+      <span class="badge"><svg class="badgeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>Real-time</span>
+      <span class="badge"><svg class="badgeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V10M9 20V4M15 20v-7M21 20v-3"/></svg>Causal Processing</span>
+      <span class="badge"><svg class="badgeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>0&nbsp;ms Look-Ahead</span>
+      <span class="badge"><svg class="badgeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>Embedded-Ready</span>
+    </div>
+    <span id="statusDetail" class="statusDetail hidden"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="modeSwitch" id="modeSwitch">
+    <button class="modeBtn" data-mode="live"><svg class="modeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg> Live Mic</button>
+    <button class="modeBtn" data-mode="record"><svg class="modeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg> Record</button>
+    <button class="modeBtn" data-mode="upload"><svg class="modeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-1-8.9 5 5 0 0 1 9.8-1.6A4 4 0 0 1 17 18H7z"/><path d="M12 11v6M9.5 13.5 12 11l2.5 2.5"/></svg> Upload</button>
+  </div>
+
+  <section id="livePanel" class="card hero hidden">
+    <div class="heroInner">
+      <div class="heroIcon" id="heroIcon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="none"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg></div>
+      <h2>Live noise cancellation</h2>
+      <p class="hint">Speak into your microphone &mdash; cleaned audio streams back continuously.</p>
+      <button id="liveBtn" class="btn btnBig">&#9679; Start live demo</button>
+      <div class="flowLine">Microphone &rarr; AI &rarr; Enhanced Audio</div>
+      <span id="liveStatus" class="hint" style="display:block;margin-top:4px"></span>
+      <div class="noticeBox">
+        <svg class="noticeIco" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".6" fill="currentColor" stroke="none"/></svg>
+        <p class="hint small">Needs mic permission and, on a remote/LAN URL, HTTPS (a plain
+          <code>http://&lt;lan-ip&gt;</code> page can't get mic access from another device's
+          browser &mdash; use the demo laptop's own browser, or a tunnel URL).</p>
+      </div>
+    </div>
+
+    <div id="liveSpectrumWrap" class="hidden">
+      <canvas id="liveSpectrum" class="spectrum"></canvas>
+      <div class="liveClipRow">
+        <span class="hint" id="clipHint">Capturing enhanced audio for download&hellip;</span>
+        <button id="saveClipBtn" class="btn hidden" style="margin-top:0">&#8595; Save clip</button>
+      </div>
+    </div>
+
+    <div id="fallbackOffer" class="hidden" style="margin-top:6px">
+      <p class="hint">Mic unavailable? Run the fallback demo &mdash; same streaming
+        pipeline, paced live, using a bundled sample instead of your mic.</p>
+      <button id="fallbackBtn" class="btn" style="background:var(--warn)">Run fallback demo</button>
+    </div>
+  </section>
+
+  <section id="recordPanel" class="card hidden">
+    <h3>Record from your microphone</h3>
+    <p class="hint">Records a clip, then streams it back cleaned in progressive fragments
+      (same pipeline as Live Mic) instead of one long wait.</p>
+    <button id="recordBtn" class="btn">&#9679; Start recording</button>
+    <span id="recordStatus" class="hint" style="margin-left:10px"></span>
+  </section>
+
+  <section id="uploadPanel" class="hidden">
+    <section id="drop" class="drop">
+      <input type="file" id="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.flac,.aac,.opus,.mp4" hidden />
+      <div class="drop-inner">
+        <div class="drop-ico"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="14" x2="4" y2="18"/><line x1="8" y1="9" x2="8" y2="20"/><line x1="12" y1="4" x2="12" y2="22"/><line x1="16" y1="9" x2="16" y2="20"/><line x1="20" y1="14" x2="20" y2="18"/></svg></div>
+        <p><strong>Drop audio here</strong> or <button id="browse" class="link">browse files</button></p>
+        <p class="hint" id="limits">wav / mp3 / m4a &mdash; no duration limit</p>
+      </div>
+    </section>
+
+    <div class="samples">
+      <span class="hint">Try a scenario</span>
+      <div id="sampleBtns" class="scenarioRow"></div>
+    </div>
+  </section>
+
+  <section id="progress" class="card hidden">
+    <div class="spinner"></div>
+    <div id="progressText">Uploading&hellip;</div>
+    <div class="meter" id="progressMeterWrap" style="margin-top:10px">
+      <div id="progressMeter" class="meter-fill"></div>
+    </div>
+  </section>
+
+  <section id="error" class="card err hidden"></section>
+
+  <!-- The ONE input/enhanced audio section -- live view while streaming/processing,
+       becomes the before/after comparison once a clip finishes. No waveform or player
+       is duplicated anywhere else on the page. -->
+  <section class="card avSection">
+    <div class="avHeader">
+      <h2 class="sectionTitle" id="avTitle">LIVE AUDIO</h2>
+      <span id="avStateTag" class="tag hidden"></span>
+    </div>
+    <div class="baRow">
+      <div class="baCol" id="inBaCol">
+        <div class="baLabel"><span id="inBaLabel">Input</span> <span class="baSub">noisy</span>
+          <span class="playingTag hidden" id="inPlayingTag">&#9654; Playing</span></div>
+        <canvas id="inWave" class="wave"></canvas>
+        <div class="levelRow"><div class="meter"><div id="inLevelFill" class="meter-fill"></div></div>
+          <span class="levelReadout" id="inLevelDb">&mdash;</span></div>
+        <audio id="inPreviewAudio" class="inlineAudio hidden" controls preload="metadata"></audio>
+      </div>
+      <div class="baCol colOk" id="outBaCol">
+        <div class="baLabel"><span id="outBaLabel">Enhanced</span> <span class="baSub">output</span>
+          <span class="playingTag hidden" id="outPlayingTag">&#9654; Playing</span></div>
+        <canvas id="outWave" class="wave ok"></canvas>
+        <div class="levelRow"><div class="meter"><div id="outLevelFill" class="meter-fill ok"></div></div>
+          <span class="levelReadout" id="outLevelDb">&mdash;</span></div>
+        <audio id="outAudio" class="inlineAudio hidden" controls preload="metadata"></audio>
+        <a id="dl" class="btn hidden" download>&#8595; Download enhanced .wav</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhancement result (this clip) -- only rendered if the backend actually returns
+       reference metrics for THIS clip (it does not today for any demo/upload/sample,
+       since none have a clean reference; see webdemo/README.md). Never fabricated. -->
+  <section id="offlineMetrics" class="card hidden"></section>
+
+  <!-- audio in -> processed -> latency: telemetry sits right after the live result,
+       ahead of the (more implementation-detail) pipeline diagram below. -->
+  <section class="card telemetryCard">
+    <div class="telemetryHeader">
+      <h3>Real-time performance</h3>
+      <span id="rtBadge" class="tag hidden"></span>
+    </div>
+    <div class="statGrid" id="statGrid">
+      <div class="statTile"><div class="statLabel">Real-time factor</div><div class="statValue" id="statRtf">&mdash;</div></div>
+      <div class="statTile"><div class="statLabel">P50 latency</div><div class="statValue" id="statP50">&mdash;</div></div>
+      <div class="statTile"><div class="statLabel">P99 latency</div><div class="statValue" id="statP99">&mdash;</div></div>
+      <div class="statTile"><div class="statLabel">Frame hop</div><div class="statValue" id="statHop">&mdash;</div></div>
+      <div class="statTile"><div class="statLabel">Dropped chunks</div><div class="statValue" id="statDropped">&mdash;</div></div>
+      <div class="statTile"><div class="statLabel" id="statQueueLabel">Queue</div><div class="statValue" id="statQueue">&mdash;</div></div>
+    </div>
+    <details class="specDetails" id="liveDiagnostics">
+      <summary>&#9656; Live diagnostics</summary>
+      <table class="kv" id="liveDiagTable"></table>
+    </details>
+  </section>
+
+  <section class="card pipeline demoHide">
+    <div class="pipeStage" data-stage="input"><span class="pipeIco">&#127908;</span><span>Mic Input</span></div>
+    <div class="pipeArrow">&rarr;</div>
+    <div class="pipeStage" data-stage="stft"><span class="pipeIco">&#8942;&#8942;&#8942;</span><span>STFT</span></div>
+    <div class="pipeArrow">&rarr;</div>
+    <div class="pipeStage pipeModel" data-stage="model"><span class="pipeIco"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span><span>AI Model</span><span class="pipeSub">Causal CRN</span></div>
+    <div class="pipeArrow">&rarr;</div>
+    <div class="pipeStage" data-stage="deepfilter"><span class="pipeIco">&#9636;</span><span>Deep Filter</span><span class="pipeSub">Order-5</span></div>
+    <div class="pipeArrow">&rarr;</div>
+    <div class="pipeStage" data-stage="istft"><span class="pipeIco">&#8942;&#8942;&#8942;</span><span>iSTFT</span></div>
+    <div class="pipeArrow">&rarr;</div>
+    <div class="pipeStage" data-stage="output"><span class="pipeIco"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="7" rx="1.5"/><rect x="16.5" y="13" width="5" height="7" rx="1.5"/></svg></span><span>Output</span></div>
+  </section>
+
+  <div class="demoHide">
+    <div class="card statCard">
+      <h3>Deployment</h3>
+      <table class="kv" id="systemCard"></table>
+      <details class="specDetails"><summary>Verification &amp; provenance</summary>
+        <table class="kv" id="prov"></table>
+      </details>
+    </div>
+
+    <!-- Spectrogram: secondary supporting evidence -- collapsed by default. Same
+       time/freq/color scale for both sides (see server_local.py spectrogram_png's
+       shared vmax). Never shown for live mic (no file exists yet). -->
+    <section id="specSection" class="card hidden">
+      <details id="specToggle">
+        <summary>&#9662; Frequency analysis (spectrogram)</summary>
+        <p class="hint" style="margin:8px 0 12px">Visual evidence only -- background energy
+          reduction and preserved speech structure, not a quantitative measurement by
+          itself.</p>
+        <div class="baRow">
+          <div class="baCol">
+            <div class="baLabel">Before <span class="baSub">noisy</span></div>
+            <img id="inSpec" alt="input spectrogram" />
+          </div>
+          <div class="baCol colOk">
+            <div class="baLabel">After <span class="baSub">enhanced</span></div>
+            <img id="outSpec" alt="enhanced spectrogram" />
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Project's real held-out validation results, by input-SNR band (docs/PROGRESS.md,
+         Phase H breakdown). Static reference data -- NOT measured from whatever clip is
+         currently loaded above, and explicitly labeled as such. Kept last -- it's
+         project-level reference data, not something about the clip you just ran. -->
+    <div class="card statCard">
+      <h3>Held-out evaluation <span class="tag">project results, not this clip</span></h3>
+      <p class="hint" style="margin:0 0 10px">Measured on the model's held-out validation
+        set (400 real-audio mixture pairs), broken out by input SNR band -- not computed
+        from the clip shown above, which has no clean reference to measure against.</p>
+      <div id="evalBandSwitch" class="modeSwitch" style="margin-bottom:14px"></div>
+      <div id="evalSummary"></div>
+      <details class="specDetails">
+        <summary>&#9662; Performance curve (output SI-SNR vs. input SNR)</summary>
+        <canvas id="perfCurve" class="perfCurve"></canvas>
+      </details>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap demoHide">
+  <div class="techStrip">
+    <span class="techItem">CAUSAL CRN</span><span class="techDot">&middot;</span>
+    <span class="techItem">16&nbsp;kHz</span><span class="techDot">&middot;</span>
+    <span class="techItem">32&nbsp;ms WINDOW</span><span class="techDot">&middot;</span>
+    <span class="techItem">16&nbsp;ms HOP</span><span class="techDot">&middot;</span>
+    <span class="techItem">0&nbsp;ms LOOK-AHEAD</span><span class="techDot">&middot;</span>
+    <span class="techItem">ORDER-5 DEEP FILTER</span><span class="techDot">&middot;</span>
+    <span class="techItem">ONNX RUNTIME</span>
+  </div>
+</footer>
+
+<script src="/static/streaming_player.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

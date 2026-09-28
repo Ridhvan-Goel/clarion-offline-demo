@@ -1,0 +1,21 @@
+{
+  "sample_rate": 16000,
+  "n_fft": 512,
+  "hop_length": 256,
+  "win_length": 512,
+  "freq_bins": 257,
+  "gru_layers": 2,
+  "gru_hidden": 256,
+  "head": "deepfilter",
+  "df_order": 5,
+  "df_lookahead": 0,
+  "input_names": [
+    "noisy_ri_frame",
+    "h0"
+  ],
+  "output_names": [
+    "coef_real",
+    "coef_imag",
+    "h_n"
+  ]
+}
